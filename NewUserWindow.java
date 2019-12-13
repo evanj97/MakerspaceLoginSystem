@@ -1,3 +1,16 @@
+/*
+    Made for Bellevue College RISE Makerspace by Evan Johnson
+
+    Project Description:
+    Digital sign-in system.  New users input their first name, last name, student ID number,
+    and college email.  When a user is in the system already, all they need to sign in is
+    their student ID number, greatly shortening sign-in time.
+
+    Class Description:  New User Window.  Displays fields for first name, last name, student ID
+    number, and Bellevue College email.
+
+ */
+
 package src;
 
 import javax.swing.*;
