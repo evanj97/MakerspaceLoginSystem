@@ -1,3 +1,17 @@
+/*
+    Made for Bellevue College RISE Makerspace by Evan Johnson
+
+    Project Description:
+    Digital sign-in system.  New users input their first name, last name, student ID number,
+    and college email.  When a user is in the system already, all they need to sign in is
+    their student ID number, greatly shortening sign-in time.
+
+    Class Description:  Administrator report window.  GUI window element used by the staff to
+    create new .csv files containing student information and get a quick preview of the number
+    of attendees.
+
+ */
+
 package src;
 
 import javax.swing.*;
@@ -6,6 +20,7 @@ import java.awt.*;
 public class ReportWindow
 {
 
+    // fonts for various elements
     private Font titleFont = new Font(Font.SANS_SERIF, 0, 24);
     private Font labelFont = new Font(Font.SANS_SERIF, 0, 18);
     private Font fieldFont = new Font(Font.SANS_SERIF, 0, 14);
@@ -143,7 +158,7 @@ public class ReportWindow
         statPanel = new JPanel();
         statPanel.setLayout(new BoxLayout(statPanel, BoxLayout.PAGE_AXIS));
 
-        statPanel.add(Box.createVerticalGlue()); // TODO evaluate glue
+        statPanel.add(Box.createVerticalGlue());
         statPanel.add(distinctPanel);
         statPanel.add(Box.createVerticalGlue());
         statPanel.add(totalPanel);
@@ -176,13 +191,8 @@ public class ReportWindow
         // REPORT PANEL * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
         reportPanel = new JPanel();
-        // reportPanel.setLayout(new BoxLayout(reportPanel, BoxLayout.LINE_AXIS));
-
-        // reportPanel.add(Box.createHorizontalGlue());
         reportPanel.add(statPanel);
-        // reportPanel.add(Box.createHorizontalGlue());
         reportPanel.add(btnPanel);
-        // reportPanel.add(Box.createHorizontalGlue());
 
 
         // CLOSE BUTTON * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -193,7 +203,6 @@ public class ReportWindow
         closeBtn.setSize(400, 200);
 
         // MAIN PANEL * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-        // pnl.add(Box.createVerticalGlue());
         pnl.add(titleLabel);
         pnl.add(Box.createVerticalGlue());
         pnl.add(datePanel);
@@ -210,6 +219,7 @@ public class ReportWindow
 
         frm.setPreferredSize(windowSize);
         frm.setSize(windowSize);
+
         // center on screen
         frm.setLocation((screenSize.width / 2) - (windowSize.width / 2), (screenSize.height / 2) - (windowSize.height / 2));
 

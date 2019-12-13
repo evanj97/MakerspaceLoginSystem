@@ -1,3 +1,16 @@
+/*
+    Made for Bellevue College RISE Makerspace by Evan Johnson
+
+    Project Description:
+    Digital sign-in system.  New users input their first name, last name, student ID number,
+    and college email.  When a user is in the system already, all they need to sign in is
+    their student ID number, greatly shortening sign-in time.
+
+    Class Description:  Failed login window class.  Window shown to user when their student ID is
+    not recognized.  Displays options to retry their SID or register as a new user.
+
+ */
+
 package src;
 
 import javax.swing.*;
@@ -6,6 +19,7 @@ import java.awt.*;
 public class FailedLoginWindow
 {
 
+    // element fonts
     private static Font messageFont = new Font(Font.SANS_SERIF, 0, 28);
     private static Font retryBtnFont = new Font(Font.SANS_SERIF, 0, 24);
     private static Font newUserBtnFont = new Font(Font.SANS_SERIF, 0, 24);
@@ -76,6 +90,7 @@ public class FailedLoginWindow
 
         frm.setPreferredSize(windowSize);
         frm.setSize(windowSize);
+
         // center on screen
         frm.setLocation((screenSize.width / 2) - (windowSize.width / 2), (screenSize.height / 2) - (windowSize.height / 2));
 

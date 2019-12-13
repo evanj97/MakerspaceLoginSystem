@@ -1,26 +1,13 @@
 /*
+    Made for Bellevue College RISE Makerspace by Evan Johnson
 
-Makerspace Sign-in system, by Evan Johnson
+    Project Description:
+    Digital sign-in system.  New users input their first name, last name, student ID number,
+    and college email.  When a user is in the system already, all they need to sign in is
+    their student ID number, greatly shortening sign-in time.
 
-if SID is known, create timestamp entry and display "signed-in" pop-up window TODO
---GUI Done TODO make this a messageDialog, not a JFrame
-
-if SID is NOT known, display dialogue offering to try again OR first time sign-in TODO
-if "try again" is selected, close popup.
---GUI Done
-
-If first time sign-in, show new popup with fName, lName, email, and SID fields TODO
-on loginBtn press, verify and timestamp, display "signed-in" pop-up window
-on cancelBtn press, go back to initial login screen
---GUI Done
-
-after GUI in place, add data-handling, add timestamp/sysTime stuff
-
-regex to verify inputs --DONE
-
-error if trying to add SID that already exists
-
-TODO make all fonts dependent on screen resolution
+    Class Description:  Main class.  Also declares all action listeners for all buttons in
+    the program.
 
  */
 
@@ -30,7 +17,6 @@ package src;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.sql.ResultSet;
 
 public class MakerspaceLoginSystem
 {
@@ -42,32 +28,16 @@ public class MakerspaceLoginSystem
 
     public static void main(String args[])
     {
-        // TODO for testing formatting of the windows
-        db = new SQLiteDB();
+        db = new SQLiteDB(); // initialize SQLite database
+
+        // initialize window objects
         initialLoginWindow = new InitialLoginWindow();
         failedLoginWindow = new FailedLoginWindow();
-        // SuccessfulLoginWindow successfulLoginWindow = new SuccessfulLoginWindow(); // REPLACE
         newUserWindow = new NewUserWindow();
         reportWindow = new ReportWindow();
 
+        // create action listeners for buttons
         createActionListeners();
-
-
-        // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-        /*
-        new Thread(() -> // DEBUG TOOL – CAN BE SAFELY DELETED
-        {
-            try
-            {
-                Thread.sleep(120000); // will auto-kill after 1 minute
-            } catch (InterruptedException e)
-            {
-                e.printStackTrace();
-            }
-            System.exit(0);
-        }).start();
-        */
-        // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
 
     }
@@ -78,7 +48,7 @@ public class MakerspaceLoginSystem
 
         // INITIAL LOGIN WINDOW
 
-        // login with existing user, or display failedLoginWindow
+        // Login Button:  login with existing user, or display failedLoginWindow
         initialLoginWindow.loginBtn.addActionListener(
                 new ActionListener()
                 {
@@ -90,6 +60,7 @@ public class MakerspaceLoginSystem
                 }
         );
 
+        // Enter key shortcut when SIDfield is selected
         initialLoginWindow.SIDfield.addActionListener(
                 new ActionListener()
                 {
@@ -313,10 +284,13 @@ public class MakerspaceLoginSystem
 
     }
 
-    public static void login()
+
+    // attempt to login with only SID.  If SID not known, show failed login window
+    private static void login()
     {
         String rawSID = trimSpaces(initialLoginWindow.SIDfield.getText());
-        if (!rawSID.matches("\\d{9}")) // 9 [0-9] digits
+
+        if (!rawSID.matches("\\d{9}")) // if SID is not 9 numerical digits
         {
             JOptionPane.showMessageDialog(null, "Student ID must be 9 numerical digits", "Invalid Student ID", JOptionPane.ERROR_MESSAGE);
 
@@ -324,17 +298,17 @@ public class MakerspaceLoginSystem
         {
             int sid = Integer.parseInt(rawSID);
 
-            if (db.isKnownSID(sid))
+            if (db.isKnownSID(sid)) // if SID is in db, sign in
             {
-                db.signInStudent(sid); // if SID is in db, sign in
+                db.signInStudent(sid);
 
                 initialLoginWindow.SIDfield.setText(""); // display success message, clear SID field for next person
                 JOptionPane.showMessageDialog(null, "Sign-in successful!", "Success!", JOptionPane.PLAIN_MESSAGE);
 
-            } else
+            } else // if SID unknown, clear SID field and show failed login window
             {
-                // show FailedLoginWindow, clear SID
                 initialLoginWindow.SIDfield.setText("");
+
                 failedLoginWindow.frm.setVisible(true);
                 failedLoginWindow.frm.toFront();
             }
@@ -343,8 +317,8 @@ public class MakerspaceLoginSystem
         }
     }
 
-    // trims spaces at beginning and end of a string, as well as any double, triple, etc. spaces within strings
-    public static String trimSpaces(String s)
+    // trims spaces at beginning and end of a string, as well as reduce any 2+ spaces to 1 space within strings
+    private static String trimSpaces(String s)
     {
         String result = s.trim(); // drop all spaces on the ends
         result = result.replaceAll("(\\s)+", " "); // remove excess spaces within string

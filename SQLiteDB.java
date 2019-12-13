@@ -1,11 +1,24 @@
+/*
+    Made for Bellevue College RISE Makerspace by Evan Johnson
+
+    Project Description:
+    Digital sign-in system.  New users input their first name, last name, student ID number,
+    and college email.  When a user is in the system already, all they need to sign in is
+    their student ID number, greatly shortening sign-in time.
+
+    Class Description:  SQLite database class.  Handles the database connection, all
+    prepared statements, and database queries.
+
+ */
+
 package src;
 
 import java.sql.*;
 
 public class SQLiteDB
 {
-    private static Connection connection = null;
-    private static Statement statement = null;
+    private Connection connection = null;
+    private Statement statement = null;
 
     // create student table
     private static final String CREATE_STUDENT_TABLE_STATEMENT =
@@ -30,30 +43,33 @@ public class SQLiteDB
     private static final String LOGIN_STUDENT_STATEMENT =
             "INSERT INTO login_time(SID, LOGINTIME) values (?, datetime('now')); ";
 
+    // returns number of occurrences of student (0 or 1 because student is unique primary key)
     private static final String VERIFY_STUDENT_STATEMENT =
             "SELECT COUNT(*) FROM student WHERE sid = ? ; ";
 
+    // select first name, last name, SID, email, and login time for all sign-ins
     private static final String SELECT_ALL_STATEMENT =
             "SELECT student.SID, student.fname, student.lname, student.email, datetime(login_time.logintime, 'localtime') AS timestamp " +
                     " FROM student JOIN login_time " +
                     " ON student.SID = login_time.SID ; ";
 
+    // select first name, last name, SID, email, and login time for all sign-ins within a time frame
     private static final String SELECT_TIME_FRAME_STATEMENT =
             "SELECT student.SID, student.fname, student.lname, student.email, datetime(login_time.logintime, 'localtime') AS timestamp " +
                     " FROM student JOIN login_time" +
                     " ON student.SID = login_time.SID" +
                     " WHERE login_time.logintime >= datetime(? , 'utc') AND login_time.logintime <= datetime(?, 'utc') ; ";
 
+    // returns number of distinct students that have ever signed in
     private static final String COUNT_DISTINCT_STATEMENT =
             "SELECT count(*) as amount " +
                     " FROM student; ";
 
+    // returns number of sign-ins, ie number of times someone walked in the door
     private static final String COUNT_TOTAL_STATEMENT =
             "SELECT count(*) as amount " +
                     " FROM login_time; ";
 
-    // datetime("timestring", 'utc') --convert timestring from localtime into utc
-    // datetime("timestring", 'localtime') --convert timestring from utc into localtime
 
     private PreparedStatement insertNewStudent;
     private PreparedStatement loginStudent;
@@ -90,18 +106,6 @@ public class SQLiteDB
             countDistinct = connection.prepareStatement(COUNT_DISTINCT_STATEMENT);
             countTotal = connection.prepareStatement(COUNT_TOTAL_STATEMENT);
 
-
-            // TODO TEST
-
-            // SAMPLE PREPARED STATEMENT QUERY
-            //PreparedStatement tempPS = connection.prepareStatement("SELECT datetime('now');");
-            //ResultSet tempRS = tempPS.executeQuery();
-
-            //            while (tempRS.next())
-            //            {
-            //                System.out.println(tempRS.getString(1));
-            //            }
-            // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
         } catch (Exception e) // if exception, crash program
         {
@@ -157,7 +161,6 @@ public class SQLiteDB
             verifyStudent.setInt(1, sid);
             ResultSet RS = verifyStudent.executeQuery();
 
-
             RS.next();
 
             System.out.println("RS count: " + RS.getInt(1));
@@ -168,7 +171,7 @@ public class SQLiteDB
                 return false;
             else
             {
-                System.out.println("SQLiteDB.isKnownSID found more than 1 matching record, WTF?");
+                System.out.println("SQLiteDB.isKnownSID() found more than 1 matching record?!  WTF?!");
                 System.exit(0);
             }
 
@@ -179,7 +182,7 @@ public class SQLiteDB
         }
 
 
-        System.out.println("SQLiteDB.isKnownSID has gone HORRIBLY wrong");
+        System.out.println("SQLiteDB.isKnownSID() has gone HORRIBLY wrong");
         return false;
     }
 
@@ -189,10 +192,6 @@ public class SQLiteDB
         try
         {
             ResultSet RS = selectAll.executeQuery();
-
-
-            //printResultSet(RS); // TODO remove when done testing
-
             return RS;
 
         } catch (SQLException e) // if exception, crash program
@@ -211,11 +210,8 @@ public class SQLiteDB
         {
             selectTimeFrame.setString(1, earlyTime);
             selectTimeFrame.setString(2, laterTime);
+
             ResultSet RS = selectTimeFrame.executeQuery();
-
-            //            ResultSet tempRS = RS;
-            //            printResultSet(tempRS); // TODO remove when done testing
-
             return RS;
 
         } catch (SQLException e) // if exception, crash program
@@ -227,51 +223,7 @@ public class SQLiteDB
         return null;
     }
 
-    // console print all info from selectAll statements, mostly for debug
-    public static String printResultSet(ResultSet RS)
-    {
-        StringBuilder sb = new StringBuilder();
-
-
-        try
-        {
-
-            while (RS.next())
-            {
-                // String temp =
-                // "SID:   " + RS.getInt("SID") +
-                // "\nFname: " + RS.getString("FNAME") +
-                // "\nLname: " + RS.getString("LNAME")+
-                // "\nEmail: " + RS.getString("EMAIL")+
-                // "\nDatetime:  " + RS.getString(5)+
-                // "\n––––––––––––––––––––––––––––––––––––––––––––––––––––––––\n";
-
-                sb.append("SID:      " + RS.getInt("SID"));
-                sb.append("\nFname:    " + RS.getString("FNAME"));
-                sb.append("\nLname:    " + RS.getString("LNAME"));
-                sb.append("\nEmail:    " + RS.getString("EMAIL"));
-                sb.append("\nDatetime: " + RS.getString("timestamp"));
-                sb.append("\n––––––––––––––––––––––––––––––––––––––––––––––––––––––––\n");
-
-
-                // System.out.println("SID:   " + RS.getInt("SID"));
-                // System.out.println("Fname: " + RS.getString("FNAME"));
-                // System.out.println("Lname: " + RS.getString("LNAME"));
-                // System.out.println("Email: " + RS.getString("EMAIL"));
-                // System.out.println("Datetime:  " + RS.getString(5)); // datetime
-                //
-                // System.out.println("––––––––––––––––––––––––––––––––––––––––––––––––––––––––");
-            }
-
-        } catch (SQLException e) // if exception, crash program
-        {
-            System.err.println(e.getClass().getName() + ": " + e.getMessage());
-            System.exit(0);
-        }
-
-        return sb.toString();
-    }
-
+    // returns number of distinct students
     public int countDistinctStudents()
     {
         ResultSet RS = queryCountDistinct();
@@ -290,6 +242,7 @@ public class SQLiteDB
         return -1;
     }
 
+    // returns total number of sign-ins
     public int countTotalLogins()
     {
         ResultSet RS = queryCountTotal();
@@ -308,6 +261,7 @@ public class SQLiteDB
         return -1;
     }
 
+    // returns single element ResultSet of countDistinct query
     private ResultSet queryCountDistinct()
     {
         try
@@ -323,6 +277,7 @@ public class SQLiteDB
         return null;
     }
 
+    // returns single element ResultSet of countTotal query
     private ResultSet queryCountTotal()
     {
         try

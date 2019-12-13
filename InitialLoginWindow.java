@@ -1,5 +1,12 @@
 /*
-this class displays the main sign-in window the user first sees when approaching the system
+    Made for Bellevue College RISE Makerspace by Evan Johnson
+
+    Project Description:
+    Digital sign-in system.  New users input their first name, last name, student ID number,
+    and college email.  When a user is in the system already, all they need to sign in is
+    their student ID number, greatly shortening sign-in time.
+
+    Class Description:  Displays the main sign-in window the user first sees when approaching the system.
 
  */
 
@@ -12,6 +19,7 @@ import java.awt.*;
 
 public class InitialLoginWindow
 {
+    // element fonts
     private static Font titleFont = new Font(Font.SANS_SERIF, 0, 48);
     private static Font sidFont = new Font(Font.SANS_SERIF, 0, 24);
     private static Font loginBtnFont = new Font(Font.SANS_SERIF, 0, 24);
@@ -37,7 +45,7 @@ public class InitialLoginWindow
     public InitialLoginWindow()
     {
         // Setting up JFrame
-        frm = new JFrame("Makerspace Sign-in V1.0");
+        frm = new JFrame("Makerspace Sign-in V1.1");
 
         Toolkit tk = Toolkit.getDefaultToolkit();
         Dimension screenSize = tk.getScreenSize();
@@ -96,7 +104,6 @@ public class InitialLoginWindow
 
 
         // MENU
-
         menuBar = new JMenuBar();
         menu = new JMenu("Admin");
         createReportMenuItem = new JMenuItem("Create Attendance Report");

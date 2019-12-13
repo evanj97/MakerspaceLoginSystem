@@ -1,23 +1,32 @@
+/*
+    Made for Bellevue College RISE Makerspace by Evan Johnson
+
+    Project Description:
+    Digital sign-in system.  New users input their first name, last name, student ID number,
+    and college email.  When a user is in the system already, all they need to sign in is
+    their student ID number, greatly shortening sign-in time.
+
+    Class Description:  contains 2 public static functions that generate .csv files containing
+    student information.
+
+ */
+
 package src;
 
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.format.DateTimeFormatter;
 
 public class CSVPrinter
 {
+    // create a .csv file that contains a record of every sign-in performed, including all student data
     public static boolean printAll(ResultSet RS)
     {
         boolean successful = true;
 
         java.time.LocalDateTime now = java.time.LocalDateTime.now();
-        //        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
         String formattedDT = now.format(formatter);
@@ -36,6 +45,7 @@ public class CSVPrinter
         return successful;
     }
 
+    // create a .csv file that contains a record of every sign-in performed within a range, (given a ResultSet of data within that range)
     public static boolean printTimeframe(String startDate, String endDate, ResultSet RS)
     {
         boolean successful = true;
@@ -53,6 +63,7 @@ public class CSVPrinter
         return successful;
     }
 
+    // build a .csv formatted string to fill the .csv file with
     private static String buildString(ResultSet RS)
     {
         StringBuilder sb = new StringBuilder();
